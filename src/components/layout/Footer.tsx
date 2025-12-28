@@ -23,7 +23,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-sm text-white/90">
-              Professional, Swift and Reliable Removals
+              vSwift Logistics offers professional, reliable and swift removals for all of our clients. We also provide comprehensive waste disposal and recycling services.
             </p>
           </div>
 
