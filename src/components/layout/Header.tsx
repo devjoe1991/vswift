@@ -13,8 +13,8 @@ export default function Header() {
       <div className="bg-[#87CEEB] text-white py-2 px-4 text-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <span className="text-white font-medium">vSwift Logistics</span>
-          <a href="tel:+441234567890" className="hover:text-white/80 transition-colors">
-            +44 (0) 123 456 7890
+          <a href="tel:+447487263317" className="hover:text-white/80 transition-colors">
+            +44 (0) 7487 263317
           </a>
         </div>
       </div>
@@ -48,9 +48,12 @@ export default function Header() {
             <a href="#contact" className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors">
               Contact
             </a>
-            <button className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm">
+            <a
+              href="mailto:sales@vswift.uk"
+              className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm inline-block text-center"
+            >
               Enquire Now
-            </button>
+            </a>
           </div>
 
           {/* Mobile Hamburger Menu */}
@@ -109,9 +112,13 @@ export default function Header() {
                 >
                   Contact
                 </a>
-                <button className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm w-full mt-2">
+                <a
+                  href="mailto:sales@vswift.uk"
+                  className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm w-full mt-2 inline-block text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Enquire Now
-                </button>
+                </a>
               </div>
             </motion.div>
           )}

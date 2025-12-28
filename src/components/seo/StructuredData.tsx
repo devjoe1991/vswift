@@ -15,9 +15,9 @@ export default function StructuredData() {
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+44-123-456-7890",
+      telephone: "+44-7487-263317",
       contactType: "Customer Service",
-      email: "info@vswift-logistics.co.uk",
+      email: "sales@vswift.uk",
       areaServed: "GB",
       availableLanguage: "en",
     },

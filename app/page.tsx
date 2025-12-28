@@ -4,6 +4,7 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import ServiceNavigator from "@/components/sections/ServiceNavigator";
 import GlobalBottomSheet from "@/components/overlay/GlobalBottomSheet";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import StructuredData from "@/components/seo/StructuredData";
 import { services } from "@/data/services";
 
@@ -18,6 +19,7 @@ export default function Home() {
         <ServiceNavigator services={services} />
         <Footer />
         <GlobalBottomSheet />
+        <WhatsAppButton />
       </main>
     </>
   );

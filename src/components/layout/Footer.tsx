@@ -33,8 +33,13 @@ export default function Footer() {
               London, United Kingdom
             </p>
             <p className="text-sm text-white/90 mb-2">
-              <a href="tel:+441234567890" className="hover:text-white transition-colors">
-                +44 (0) 123 456 7890
+              <a href="tel:+447487263317" className="hover:text-white transition-colors">
+                +44 (0) 7487 263317
+              </a>
+            </p>
+            <p className="text-sm text-white/90 mb-2">
+              <a href="mailto:sales@vswift.uk" className="hover:text-white transition-colors">
+                sales@vswift.uk
               </a>
             </p>
             <p className="text-sm text-white/90 mb-4">
@@ -64,9 +69,14 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/30 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-white/80">
-            © {new Date().getFullYear()} vSwift Logistics. All rights reserved.
-          </p>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-white/80">
+              © {new Date().getFullYear()} vSwift Logistics. All rights reserved.
+            </p>
+            <p className="text-sm text-white/80">
+              VSWIFT LOGISTICS LTD | Company number 14555005
+            </p>
+          </div>
           <motion.button
             onClick={scrollToTop}
             className="px-6 py-2 bg-white text-[#87CEEB] font-semibold rounded-sm hover:bg-white/90 transition-colors"

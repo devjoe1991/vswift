@@ -56,14 +56,15 @@ export default function GlobalBottomSheet() {
                 <p className="text-gray-700 leading-relaxed mb-6">
                   {bottomSheetContent.details}
                 </p>
-                <motion.button
+                <motion.a
+                  href="mailto:sales@vswift.uk"
                   onClick={closeBottomSheet}
-                  className="w-full py-4 border-2 border-[#87CEEB] bg-[#87CEEB] text-white font-semibold rounded-sm hover:bg-[#6BB6D6] hover:border-[#6BB6D6] transition-colors shadow-lg"
+                  className="w-full py-4 border-2 border-[#87CEEB] bg-[#87CEEB] text-white font-semibold rounded-sm hover:bg-[#6BB6D6] hover:border-[#6BB6D6] transition-colors shadow-lg inline-block text-center"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   Enquire Now
-                </motion.button>
+                </motion.a>
               </div>
             </div>
           </motion.div>

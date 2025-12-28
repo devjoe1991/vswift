@@ -39,8 +39,9 @@ export default function Hero() {
         >
           Professional, Swift and Reliable Removals
         </motion.p>
-        <motion.button
-          className="px-8 py-4 border-2 border-white bg-transparent text-white font-semibold text-lg hover:bg-white/20 hover:border-white transition-colors rounded-sm shadow-lg"
+        <motion.a
+          href="mailto:sales@vswift.uk"
+          className="px-8 py-4 border-2 border-white bg-transparent text-white font-semibold text-lg hover:bg-white/20 hover:border-white transition-colors rounded-sm shadow-lg inline-block"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.6 }}
@@ -48,7 +49,7 @@ export default function Hero() {
           whileTap={{ scale: 0.95 }}
         >
           Enquire Now
-        </motion.button>
+        </motion.a>
       </div>
       
       {/* Shadow effect and separator at bottom */}
