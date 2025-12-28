@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://vswift-logistics.netlify.app"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app"
   ),
   alternates: {
     canonical: "/",
@@ -69,13 +69,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_GB",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://vswift-logistics.netlify.app",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app",
     siteName: "vSwift Logistics",
     title: "vSwift Logistics | Professional Removals & Waste Disposal Services",
     description: "Professional, swift and reliable removals and waste disposal services. Fully insured with Goods In Transit cover up to £10,000 and Public Liability Insurance up to £2,000,000.",
     images: [
       {
-        url: "/mainlogo.png",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app"}/mainlogo.png`,
         width: 1200,
         height: 1200,
         alt: "vSwift Logistics Logo",
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     description: "Professional, swift and reliable removals and waste disposal services. Fully insured and punctual service.",
     images: [
       {
-        url: "/mainlogo.png",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app"}/mainlogo.png`,
         width: 1200,
         height: 1200,
         alt: "vSwift Logistics Logo",

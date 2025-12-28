@@ -6,8 +6,8 @@ export default function StructuredData() {
     "@type": "MovingCompany",
     name: "vSwift Logistics",
     description: "Professional, swift and reliable removals and waste disposal services. Fully insured with Goods In Transit cover up to £10,000 and Public Liability Insurance up to £2,000,000.",
-    url: "https://vswift-logistics.netlify.app",
-    logo: "https://vswift-logistics.netlify.app/mainlogo.png",
+    url: "https://vswiftlogistics.netlify.app",
+    logo: "https://vswiftlogistics.netlify.app/mainlogo.png",
     address: {
       "@type": "PostalAddress",
       addressLocality: "London",
@@ -62,13 +62,13 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "vSwift Logistics",
-    url: "https://vswift-logistics.netlify.app",
+    url: "https://vswiftlogistics.netlify.app",
     description: "Professional Removals & Waste Disposal Services",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://vswift-logistics.netlify.app/?s={search_term_string}",
+        urlTemplate: "https://vswiftlogistics.netlify.app/?s={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },

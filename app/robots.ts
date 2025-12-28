@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vswift-logistics.netlify.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app";
 
   return {
     rules: [
