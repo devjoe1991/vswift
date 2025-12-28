@@ -37,14 +37,9 @@ export default function Footer() {
                 +44 (0) 7487 263317
               </a>
             </p>
-            <p className="text-sm text-white/90 mb-2">
+            <p className="text-sm text-white/90 mb-4">
               <a href="mailto:sales@vswift.uk" className="hover:text-white transition-colors">
                 sales@vswift.uk
-              </a>
-            </p>
-            <p className="text-sm text-white/90 mb-4">
-              <a href="mailto:info@vswift-logistics.co.uk" className="hover:text-white transition-colors">
-                info@vswift-logistics.co.uk
               </a>
             </p>
             <h4 className="font-semibold mb-2 text-white">Business Hours</h4>
