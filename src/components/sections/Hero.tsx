@@ -5,17 +5,17 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[40vh] flex items-center justify-center px-4 py-12 bg-[#87CEEB] overflow-hidden">
+    <section className="relative min-h-[30vh] md:min-h-[45vh] flex items-center justify-center px-4 py-8 md:py-12 bg-[#87CEEB] overflow-hidden">
       {/* Background Image with Blue Overlay */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/frontvan.png"
-          alt="vSwift Logistics van"
-          fill
-          className="object-cover"
-          priority
-          quality={90}
-        />
+                <Image
+                  src="/frontvan.png"
+                  alt="vSwift Logistics van"
+                  fill
+                  className="object-cover object-center"
+                  priority
+                  quality={90}
+                />
       </div>
       
       {/* Additional blue overlay to maintain light blue background */}
