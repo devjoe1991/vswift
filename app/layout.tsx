@@ -76,8 +76,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app"}/mainlogo.png`,
-        width: 1200,
-        height: 1200,
+        width: 1184,
+        height: 864,
         alt: "vSwift Logistics Logo",
         type: "image/png",
       },
@@ -90,8 +90,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://vswiftlogistics.netlify.app"}/mainlogo.png`,
-        width: 1200,
-        height: 1200,
+        width: 1184,
+        height: 864,
         alt: "vSwift Logistics Logo",
       },
     ],
