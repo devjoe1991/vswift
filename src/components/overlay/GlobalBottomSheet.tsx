@@ -42,8 +42,8 @@ export default function GlobalBottomSheet() {
               <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
             </div>
 
-            {/* Content */}
-            <div className="px-6 pb-8 overflow-y-auto max-h-[calc(90vh-60px)]">
+            {/* Content - Scrollable */}
+            <div className="px-6 pb-8 overflow-y-auto max-h-[calc(90vh-60px)] scrollbar-thin scrollbar-thumb-[#87CEEB] scrollbar-track-gray-100">
               <div className="text-6xl mb-4">{bottomSheetContent.icon}</div>
               <h2 className="font-serif text-3xl font-bold text-[#1e3a5f] mb-4">
                 {bottomSheetContent.title}
@@ -56,6 +56,21 @@ export default function GlobalBottomSheet() {
                 <p className="text-gray-700 leading-relaxed mb-6">
                   {bottomSheetContent.details}
                 </p>
+                
+                {/* Coverage Area Information */}
+                <div className="bg-[#87CEEB]/10 border border-[#87CEEB]/20 rounded-lg p-4 mb-6">
+                  <h4 className="font-semibold text-[#1e3a5f] mb-2 flex items-center gap-2">
+                    <span>📍</span>
+                    Coverage Area
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed text-sm">
+                    We operate all around the M25 and provide long distance services throughout the UK. 
+                    Whether you need a local move or a long-distance relocation, we're here to help. 
+                    Our professional service covers the entire M25 area and beyond, ensuring reliable 
+                    and efficient service wherever you need us.
+                  </p>
+                </div>
+
                 <motion.a
                   href="mailto:sales@vswift.uk"
                   onClick={closeBottomSheet}
