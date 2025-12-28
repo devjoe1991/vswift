@@ -76,16 +76,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/mainlogo.png",
-        width: 512,
-        height: 512,
-        alt: "vSwift Logistics Logo",
-        type: "image/png",
-      },
-      {
-        url: "/frontvan.png",
         width: 1200,
-        height: 630,
-        alt: "vSwift Logistics - Professional Removals & Waste Disposal Services",
+        height: 1200,
+        alt: "vSwift Logistics Logo",
         type: "image/png",
       },
     ],
@@ -97,6 +90,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/mainlogo.png",
+        width: 1200,
+        height: 1200,
         alt: "vSwift Logistics Logo",
       },
     ],
@@ -119,14 +114,14 @@ export const metadata: Metadata = {
   category: "Logistics Services",
   icons: {
     icon: [
-      { url: "/mainlogo.png", type: "image/png" },
-      { url: "/mainlogo.png", type: "image/png", sizes: "32x32" },
-      { url: "/mainlogo.png", type: "image/png", sizes: "16x16" },
+      { url: "/icon.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon.png", type: "image/png", sizes: "16x16" },
     ],
     apple: [
-      { url: "/mainlogo.png", type: "image/png", sizes: "180x180" },
+      { url: "/apple-icon.png", type: "image/png", sizes: "180x180" },
     ],
-    shortcut: "/mainlogo.png",
+    shortcut: "/favicon.ico",
   },
 };
 
