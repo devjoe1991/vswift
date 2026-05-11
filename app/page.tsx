@@ -31,6 +31,7 @@ export default function Home() {
     <>
       <Hero />
       <TrustStrip />
+      <QuoteBuilder />
       <ServiceCarousel
         services={featured}
         heading="What we do"
@@ -46,7 +47,6 @@ export default function Home() {
       </div>
       <UseCases />
       <HowItWorks />
-      <QuoteBuilder background="light" />
       <TwoUpSplit />
       <About />
       <AreasStrip />
