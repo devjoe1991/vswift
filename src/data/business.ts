@@ -74,6 +74,7 @@ export const NAV_ITEMS: NavItem[] = [
       href: `/services/${s.id}`,
     })),
   },
+  { label: "Get a Quote", href: "/quote" },
   { label: "Areas Served", href: "/areas-served" },
   { label: "FAQs", href: "/faqs" },
   { label: "Contact", href: "/contact" },
@@ -82,6 +83,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const FOOTER_LINK_GROUPS = {
   company: [
     { label: "About", href: "/about" },
+    { label: "Get a Quote", href: "/quote" },
     { label: "Areas Served", href: "/areas-served" },
     { label: "FAQs", href: "/faqs" },
     { label: "Contact", href: "/contact" },

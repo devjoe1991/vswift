@@ -5,6 +5,7 @@ import TrustStrip from "@/components/sections/TrustStrip";
 import ServiceCarousel from "@/components/sections/ServiceCarousel";
 import UseCases from "@/components/sections/UseCases";
 import HowItWorks from "@/components/sections/HowItWorks";
+import QuoteBuilder from "@/components/sections/QuoteBuilder";
 import About from "@/components/sections/About";
 import TwoUpSplit from "@/components/sections/TwoUpSplit";
 import AreasStrip from "@/components/sections/AreasStrip";
@@ -45,6 +46,7 @@ export default function Home() {
       </div>
       <UseCases />
       <HowItWorks />
+      <QuoteBuilder background="light" />
       <TwoUpSplit />
       <About />
       <AreasStrip />

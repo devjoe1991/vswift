@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import MidPageCTA from "@/components/layout/MidPageCTA";
 import CTAButton from "@/components/ui/CTAButton";
 import ServiceCarousel from "@/components/sections/ServiceCarousel";
+import QuoteBuilder from "@/components/sections/QuoteBuilder";
 import { services } from "@/data/services";
 import { BUSINESS } from "@/data/business";
 
@@ -65,9 +66,18 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
           {service.description}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-12">
+        <div className="flex flex-col sm:flex-row gap-3 mb-10">
           <CTAButton intent="whatsapp" variant="primary" size="lg" />
           <CTAButton intent="call" variant="outline" size="lg" label="Call Us" />
+        </div>
+
+        <div className="-mx-4 mb-10">
+          <QuoteBuilder
+            preselectedServiceId={service.id}
+            compact
+            background="white"
+            heading={`Quote for ${service.title}`}
+          />
         </div>
 
         <div className="prose max-w-none">
