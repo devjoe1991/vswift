@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/sections/Hero";
 import TrustStrip from "@/components/sections/TrustStrip";
-import ServicesGrid from "@/components/sections/ServicesGrid";
+import ServiceCarousel from "@/components/sections/ServiceCarousel";
 import UseCases from "@/components/sections/UseCases";
 import HowItWorks from "@/components/sections/HowItWorks";
 import About from "@/components/sections/About";
@@ -30,7 +30,7 @@ export default function Home() {
     <>
       <Hero />
       <TrustStrip />
-      <ServicesGrid
+      <ServiceCarousel
         services={featured}
         heading="What we do"
         subheading="Removals, deliveries, waste collection and recycling. One team, fully insured."

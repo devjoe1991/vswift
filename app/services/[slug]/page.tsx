@@ -7,6 +7,7 @@ import JsonLd from "@/components/ui/JsonLd";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import MidPageCTA from "@/components/layout/MidPageCTA";
 import CTAButton from "@/components/ui/CTAButton";
+import ServiceCarousel from "@/components/sections/ServiceCarousel";
 import { services } from "@/data/services";
 import { BUSINESS } from "@/data/business";
 
@@ -36,11 +37,14 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const service = services.find((s) => s.id === slug);
   if (!service) return notFound();
 
-  const related = service.related
-    ? (service.related
-        .map((id) => services.find((s) => s.id === id))
-        .filter(Boolean) as typeof services)
-    : services.filter((s) => s.id !== service.id).slice(0, 3);
+  const curatedIds = service.related ?? [];
+  const curated = curatedIds
+    .map((id) => services.find((s) => s.id === id))
+    .filter(Boolean) as typeof services;
+  const rest = services.filter(
+    (s) => s.id !== service.id && !curatedIds.includes(s.id)
+  );
+  const related = [...curated, ...rest];
 
   return (
     <>
@@ -111,33 +115,19 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         subheading="Send us the details on WhatsApp for a fast, free quote."
       />
 
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#1e3a5f] mb-6">
-          Related services
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {related.map((r) => (
-            <Link
-              key={r.id}
-              href={`/services/${r.id}`}
-              className="block p-5 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-[#87CEEB] transition-all"
-            >
-              <h3 className="font-serif font-semibold text-[#1e3a5f] mb-1">
-                {r.title}
-              </h3>
-              <p className="text-sm text-gray-600 line-clamp-2">{r.description}</p>
-            </Link>
-          ))}
-        </div>
-        <div className="mt-6">
-          <Link
-            href="/services"
-            className="text-[#87CEEB] hover:text-[#6BB6D6] font-medium"
-          >
-            View all services →
-          </Link>
-        </div>
-      </section>
+      <ServiceCarousel
+        services={related}
+        heading="More services"
+        subheading="Swipe through the rest of what we offer."
+      />
+      <div className="text-center pb-12 -mt-4 bg-[#fafafa]">
+        <Link
+          href="/services"
+          className="inline-block text-[#87CEEB] hover:text-[#6BB6D6] font-semibold"
+        >
+          View all services →
+        </Link>
+      </div>
     </>
   );
 }
