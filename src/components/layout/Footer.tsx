@@ -1,88 +1,131 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
 import Image from "next/image";
+import CTAButton from "@/components/ui/CTAButton";
+import { BUSINESS, FOOTER_LINK_GROUPS, SOCIAL_LINKS } from "@/data/business";
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const year = new Date().getFullYear();
 
   return (
     <footer className="bg-[#87CEEB] text-white py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <div className="flex items-center mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+          {/* Column 1: Brand + CTA */}
+          <div className="md:col-span-1">
+            <Link href="/" className="inline-flex items-center mb-4">
               <Image
                 src="/mainlogo.png"
-                alt="vSwift Logistics Logo"
-                width={60}
+                alt={`${BUSINESS.name} Logo`}
+                width={160}
                 height={60}
-                className="object-cover rounded-full"
+                className="h-12 w-auto object-contain"
               />
-            </div>
-            <p className="text-sm text-white/90">
-              vSwift Logistics offers professional, reliable and swift removals for all of our clients. We also provide comprehensive waste disposal and recycling services.
+            </Link>
+            <p className="text-sm text-white/90 mb-4">
+              {BUSINESS.longDescription}
             </p>
+            <CTAButton intent="whatsapp" variant="primary" size="md" label="WhatsApp Us" />
           </div>
 
+          {/* Column 2: Company */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Contact</h4>
+            <h3 className="font-semibold mb-4 text-white">Company</h3>
+            <ul className="flex flex-col gap-2">
+              {FOOTER_LINK_GROUPS.company.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="text-sm text-white/90 hover:text-white transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Services */}
+          <div>
+            <h3 className="font-semibold mb-4 text-white">Services</h3>
+            <ul className="flex flex-col gap-2">
+              {FOOTER_LINK_GROUPS.services.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="text-sm text-white/90 hover:text-white transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Contact */}
+          <div>
+            <h3 className="font-semibold mb-4 text-white">Contact</h3>
             <p className="text-sm text-white/90 mb-2">
-              London, United Kingdom
+              {BUSINESS.address.locality}, {BUSINESS.address.countryName}
             </p>
             <p className="text-sm text-white/90 mb-2">
-              <a href="tel:+447487263317" className="hover:text-white transition-colors">
-                +44 (0) 7487 263317
+              <a
+                href={`tel:${BUSINESS.phoneE164}`}
+                className="hover:text-white transition-colors underline-offset-4 hover:underline"
+              >
+                Tap to call
               </a>
             </p>
             <p className="text-sm text-white/90 mb-4">
-              <a href="mailto:sales@vswift.uk" className="hover:text-white transition-colors">
-                sales@vswift.uk
+              <a
+                href={`mailto:${BUSINESS.email}`}
+                className="hover:text-white transition-colors"
+              >
+                {BUSINESS.email}
               </a>
             </p>
-            <h4 className="font-semibold mb-2 text-white">Business Hours</h4>
-            <p className="text-sm text-white/90 mb-1">24 Hours a Day</p>
-            <p className="text-sm text-white/90 mb-1">365 Days a Year</p>
-            <p className="text-sm text-white/90 italic">Always available for your needs</p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4 text-white">Insurance</h4>
-            <p className="text-sm text-white/90 mb-2">
-              Goods In Transit cover: up to £10,000
+            <p className="text-xs text-white/80 mb-1 font-semibold uppercase tracking-wide">Hours</p>
+            <p className="text-sm text-white/90 mb-1">
+              {BUSINESS.hours.summary}
             </p>
-            <p className="text-sm text-white/90 mb-4">
-              Public Liability Insurance: up to £2,000,000
-            </p>
-            <h4 className="font-semibold mb-2 text-white">Licensing</h4>
-            <p className="text-sm text-white/90">
-              Fully licensed Waste Carrier Licence holder. All belongings are safely transported and fully insured.
-            </p>
+            {SOCIAL_LINKS.length > 0 && (
+              <div className="flex gap-3 mt-4">
+                {SOCIAL_LINKS.map((s) => (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/90 hover:text-white"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="border-t border-white/30 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col gap-2">
+        {/* Trust strip */}
+        <div className="border-t border-white/30 pt-6 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-white/90">
+          <p>Goods In Transit: up to {BUSINESS.insurance.goodsInTransit}</p>
+          <p>Public Liability: up to {BUSINESS.insurance.publicLiability}</p>
+          <p>{BUSINESS.licence.name} holder</p>
+        </div>
+
+        {/* Legal strip */}
+        <div className="border-t border-white/30 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <div className="flex flex-col gap-1">
             <p className="text-sm text-white/80">
-              © {new Date().getFullYear()} vSwift Logistics. All rights reserved.
+              © {year} {BUSINESS.name}. All rights reserved.
             </p>
-            <p className="text-sm text-white/80">
-              VSWIFT LOGISTICS LTD | Company number 14555005
+            <p className="text-xs text-white/70">
+              {BUSINESS.legalName} | Company number {BUSINESS.registrationNo}
             </p>
           </div>
-          <motion.button
-            onClick={scrollToTop}
-            className="px-6 py-2 bg-white text-[#87CEEB] font-semibold rounded-sm hover:bg-white/90 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Back to Top
-          </motion.button>
         </div>
       </div>
     </footer>
   );
 }
-

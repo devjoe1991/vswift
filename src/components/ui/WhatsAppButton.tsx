@@ -1,19 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BUSINESS } from "@/data/business";
 
 export default function WhatsAppButton() {
-  const phoneNumber = "07487263317"; // UK format: 07487 263317
-  // Remove leading 0 and add UK country code 44
-  const formattedNumber = phoneNumber.replace(/^0/, "44");
-  const whatsappUrl = `https://wa.me/${formattedNumber}`;
-
   return (
     <motion.a
-      href={whatsappUrl}
+      href={BUSINESS.whatsAppUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center hover:bg-[#20BA5A] transition-colors"
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-14 h-14 sm:w-16 sm:h-16 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center hover:bg-[#20BA5A] transition-colors"
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ type: "spring", damping: 20, stiffness: 200, delay: 0.5 }}
@@ -22,8 +18,9 @@ export default function WhatsAppButton() {
       aria-label="Contact us on WhatsApp"
     >
       <svg
-        width="32"
-        height="32"
+        width="28"
+        height="28"
+        className="sm:w-8 sm:h-8"
         viewBox="0 0 24 24"
         fill="white"
         xmlns="http://www.w3.org/2000/svg"

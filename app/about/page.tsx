@@ -1,18 +1,27 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AboutContent from "@/components/sections/AboutContent";
-import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import MidPageCTA from "@/components/layout/MidPageCTA";
+import { BUSINESS } from "@/data/business";
 
-export default function About() {
+export const metadata: Metadata = buildMetadata({
+  title: "About Us",
+  description: `${BUSINESS.name} is a fully insured London-based removals and waste disposal company serving the M25 corridor and the UK.`,
+  path: "/about",
+});
+
+export default function AboutPage() {
   return (
     <>
-      <main className="min-h-screen bg-[#fafafa]">
-        <Header />
-        <AboutContent />
-        <Footer />
-        <WhatsAppButton />
-      </main>
+      <Breadcrumbs
+        items={[
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ]}
+      />
+      <AboutContent />
+      <MidPageCTA />
     </>
   );
 }
-

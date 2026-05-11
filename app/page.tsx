@@ -1,26 +1,58 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import type { Metadata } from "next";
+import Link from "next/link";
 import Hero from "@/components/sections/Hero";
+import TrustStrip from "@/components/sections/TrustStrip";
+import ServiceCarousel from "@/components/sections/ServiceCarousel";
+import UseCases from "@/components/sections/UseCases";
+import HowItWorks from "@/components/sections/HowItWorks";
+import QuoteBuilder from "@/components/sections/QuoteBuilder";
 import About from "@/components/sections/About";
-import ServiceNavigator from "@/components/sections/ServiceNavigator";
-import GlobalBottomSheet from "@/components/overlay/GlobalBottomSheet";
-import WhatsAppButton from "@/components/ui/WhatsAppButton";
-import StructuredData from "@/components/seo/StructuredData";
+import TwoUpSplit from "@/components/sections/TwoUpSplit";
+import AreasStrip from "@/components/sections/AreasStrip";
+import CoverageMap from "@/components/sections/CoverageMap";
+import HomeFAQ from "@/components/sections/HomeFAQ";
+import MidPageCTA from "@/components/layout/MidPageCTA";
 import { services } from "@/data/services";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "London Removals, Waste Disposal & Recycling Services",
+  description:
+    "Fully insured London removals, deliveries, waste collection and recycling. Same-day and 24/7 service across the M25 corridor and the UK.",
+  path: "/",
+});
 
 export default function Home() {
+  const featured = services.filter((s) =>
+    ["removals", "deliveries", "waste-collection", "recycling"].includes(s.id)
+  );
+
   return (
     <>
-      <StructuredData />
-      <main className="min-h-screen bg-[#fafafa]">
-        <Header />
-        <Hero />
-        <About />
-        <ServiceNavigator services={services} />
-        <Footer />
-        <GlobalBottomSheet />
-        <WhatsAppButton />
-      </main>
+      <Hero />
+      <TrustStrip />
+      <QuoteBuilder />
+      <ServiceCarousel
+        services={featured}
+        heading="What we do"
+        subheading="Removals, deliveries, waste collection and recycling. One team, fully insured."
+      />
+      <div className="text-center pb-12 -mt-4 bg-[#fafafa]">
+        <Link
+          href="/services"
+          className="inline-block text-[#87CEEB] hover:text-[#6BB6D6] font-semibold"
+        >
+          View all 11 services →
+        </Link>
+      </div>
+      <UseCases />
+      <HowItWorks />
+      <TwoUpSplit />
+      <About />
+      <AreasStrip />
+      <CoverageMap />
+      <HomeFAQ />
+      <MidPageCTA />
     </>
   );
 }
