@@ -18,6 +18,7 @@ const PADDING_RIGHT = 20;
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_CARD_WIDTH = 280;
 const DESKTOP_CARD_WIDTH = 320;
+const EDGE_PADDING = 16;
 
 export default function ServiceCarousel({
   services,
@@ -33,7 +34,7 @@ export default function ServiceCarousel({
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const lastSnappedIndexRef = useRef(0);
 
@@ -48,15 +49,15 @@ export default function ServiceCarousel({
     };
 
     const calculateLayout = () => {
-      if (!containerRef.current) return;
+      if (!viewportRef.current) return;
       const width = cardWidth;
       const gap = GAP;
       const cwg = width + gap;
-      const containerWidth = containerRef.current.clientWidth;
-      const cardsVisible = Math.max(1, Math.floor(containerWidth / cwg));
-      const lastCardRightEdge =
-        (services.length - 1) * cwg + width + PADDING_RIGHT;
-      const ms = Math.max(0, lastCardRightEdge - containerWidth);
+      const viewportWidth = viewportRef.current.clientWidth;
+      const cardsVisible = Math.max(1, Math.floor(viewportWidth / cwg));
+      const trackWidth =
+        services.length * width + (services.length - 1) * gap + PADDING_RIGHT;
+      const ms = Math.max(0, trackWidth - viewportWidth);
       const cs = ms > 10;
       const maxPosition = Math.max(0, services.length - cardsVisible);
       setMaxScroll(ms);
@@ -119,7 +120,7 @@ export default function ServiceCarousel({
       calculateLayout();
       lockSectionHeight();
     });
-    if (containerRef.current) resizeObs.observe(containerRef.current);
+    if (viewportRef.current) resizeObs.observe(viewportRef.current);
 
     return () => {
       window.removeEventListener("resize", updateCardWidth);
@@ -184,80 +185,83 @@ export default function ServiceCarousel({
   return (
     <section
       ref={sectionRef}
-      className={`${bg} py-12 md:py-16 px-4 overflow-hidden`}
+      className={`${bg} py-12 md:py-16`}
       style={sectionHeight ? { minHeight: sectionHeight } : undefined}
     >
-      <div className="max-w-7xl mx-auto">
-        {(heading || subheading) && (
-          <div className="text-center mb-8 md:mb-10">
-            {heading && (
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1e3a5f] leading-tight mb-3">
-                {heading}
-              </h2>
-            )}
-            {subheading && (
-              <p className="text-[#1e3a5f]/80 max-w-2xl mx-auto">{subheading}</p>
-            )}
-          </div>
-        )}
-
-        <div className="overflow-hidden">
-          <motion.div
-            ref={containerRef}
-            className={`flex items-stretch ${
-              canScroll ? "cursor-grab active:cursor-grabbing" : "cursor-default"
-            }`}
-            style={{
-              gap: `${GAP}px`,
-              width: canScroll
-                ? `${services.length * cardWidth + (services.length - 1) * GAP + PADDING_RIGHT}px`
-                : "100%",
-              paddingRight: canScroll ? `${PADDING_RIGHT}px` : 0,
-              touchAction: "pan-x",
-              willChange: "transform",
-              x: dragX,
-            }}
-            drag={canScroll ? "x" : false}
-            dragConstraints={
-              canScroll && maxScroll > 0 ? { left: -maxScroll, right: 0 } : false
-            }
-            dragElastic={0.15}
-            dragMomentum
-            dragTransition={{
-              bounceStiffness: 300,
-              bounceDamping: 30,
-              power: 0.4,
-              timeConstant: 200,
-            }}
-            onDrag={handleDrag}
-            onDragEnd={handleDragEnd}
-          >
-            {services.map((service, i) => (
-              <div
-                key={service.id}
-                className="shrink-0"
-                style={{
-                  width: canScroll ? cardWidth : undefined,
-                  flex: canScroll ? "0 0 auto" : "1 1 0",
-                  minWidth: canScroll ? cardWidth : 0,
-                  alignSelf: "stretch",
-                }}
-              >
-                <LiquidCard service={service} index={i} widthClass="w-full" />
-              </div>
-            ))}
-          </motion.div>
+      {(heading || subheading) && (
+        <div className="max-w-7xl mx-auto px-4 text-center mb-8 md:mb-10">
+          {heading && (
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1e3a5f] leading-tight mb-3">
+              {heading}
+            </h2>
+          )}
+          {subheading && (
+            <p className="text-[#1e3a5f]/80 max-w-2xl mx-auto">{subheading}</p>
+          )}
         </div>
+      )}
 
-        {canScroll && totalDots > 0 && (
-          <div className="mt-8">
-            <ProgressLine total={totalDots} progress={scrollProgress} />
-            <p className="sr-only" aria-live="polite">
-              Showing card {activeIndex + 1} of {totalDots}
-            </p>
-          </div>
-        )}
+      <div
+        ref={viewportRef}
+        className="overflow-hidden w-full"
+        style={{ paddingLeft: EDGE_PADDING, paddingRight: 0 }}
+      >
+        <motion.div
+          className={`flex items-stretch ${
+            canScroll ? "cursor-grab active:cursor-grabbing" : "cursor-default"
+          }`}
+          style={{
+            gap: `${GAP}px`,
+            width: canScroll
+              ? `${services.length * cardWidth + (services.length - 1) * GAP + PADDING_RIGHT}px`
+              : undefined,
+            maxWidth: canScroll ? undefined : "1280px",
+            margin: canScroll ? undefined : "0 auto",
+            paddingRight: canScroll ? `${PADDING_RIGHT}px` : `${EDGE_PADDING}px`,
+            touchAction: "pan-x",
+            willChange: "transform",
+            x: dragX,
+          }}
+          drag={canScroll ? "x" : false}
+          dragConstraints={
+            canScroll && maxScroll > 0 ? { left: -maxScroll, right: 0 } : false
+          }
+          dragElastic={0.15}
+          dragMomentum
+          dragTransition={{
+            bounceStiffness: 300,
+            bounceDamping: 30,
+            power: 0.4,
+            timeConstant: 200,
+          }}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+        >
+          {services.map((service, i) => (
+            <div
+              key={service.id}
+              className="shrink-0"
+              style={{
+                width: canScroll ? cardWidth : undefined,
+                flex: canScroll ? "0 0 auto" : "1 1 0",
+                minWidth: canScroll ? cardWidth : 0,
+                alignSelf: "stretch",
+              }}
+            >
+              <LiquidCard service={service} index={i} widthClass="w-full" />
+            </div>
+          ))}
+        </motion.div>
       </div>
+
+      {canScroll && totalDots > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-8">
+          <ProgressLine total={totalDots} progress={scrollProgress} />
+          <p className="sr-only" aria-live="polite">
+            Showing card {activeIndex + 1} of {totalDots}
+          </p>
+        </div>
+      )}
     </section>
   );
 }
