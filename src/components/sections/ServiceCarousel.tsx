@@ -37,32 +37,56 @@ export default function ServiceCarousel({
   const viewportRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const lastSnappedIndexRef = useRef(0);
+  const draggedRef = useRef(false);
+  const dragStartIndexRef = useRef(0);
+  const boundaryHapticRef = useRef<"none" | "start" | "end">("none");
 
-  const cardWithGap = cardWidth + GAP;
+  // Mutable refs that always reflect the latest layout values, so callbacks
+  // captured by framer-motion subscriptions never see stale closures.
+  const maxScrollRef = useRef(0);
+  const totalDotsRef = useRef(0);
+  const cardWidthRef = useRef(DESKTOP_CARD_WIDTH);
+
   const dragX = useMotionValue(0);
 
+  useEffect(() => {
+    cardWidthRef.current = cardWidth;
+  }, [cardWidth]);
+
+  useEffect(() => {
+    maxScrollRef.current = maxScroll;
+  }, [maxScroll]);
+
+  useEffect(() => {
+    totalDotsRef.current = totalDots;
+  }, [totalDots]);
+
+  // Layout + subscriptions: run only once on mount. All state reads from refs.
   useEffect(() => {
     const updateCardWidth = () => {
       if (typeof window === "undefined") return;
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-      setCardWidth(isMobile ? MOBILE_CARD_WIDTH : DESKTOP_CARD_WIDTH);
+      const w = isMobile ? MOBILE_CARD_WIDTH : DESKTOP_CARD_WIDTH;
+      setCardWidth(w);
+      cardWidthRef.current = w;
     };
 
     const calculateLayout = () => {
       if (!viewportRef.current) return;
-      const width = cardWidth;
-      const gap = GAP;
-      const cwg = width + gap;
+      const w = cardWidthRef.current;
+      const cwg = w + GAP;
       const viewportWidth = viewportRef.current.clientWidth;
       const cardsVisible = Math.max(1, Math.floor(viewportWidth / cwg));
-      const trackWidth =
-        services.length * width + (services.length - 1) * gap + PADDING_RIGHT;
+      const trackWidth = services.length * w + (services.length - 1) * GAP + PADDING_RIGHT;
       const ms = Math.max(0, trackWidth - viewportWidth);
       const cs = ms > 10;
       const maxPosition = Math.max(0, services.length - cardsVisible);
       setMaxScroll(ms);
+      maxScrollRef.current = ms;
       setCanScroll(cs);
-      setTotalDots(cs ? maxPosition + 1 : 0);
+      const dots = cs ? maxPosition + 1 : 0;
+      setTotalDots(dots);
+      totalDotsRef.current = dots;
       if (!cs) {
         dragX.set(0);
         setActiveIndex(0);
@@ -84,19 +108,21 @@ export default function ServiceCarousel({
     };
 
     const updateActiveIndex = (latestX: number) => {
-      if (maxScroll <= 0) {
+      const ms = maxScrollRef.current;
+      const dots = totalDotsRef.current;
+      const cwg = cardWidthRef.current + GAP;
+      if (ms <= 0) {
         setScrollProgress(0);
         return;
       }
-      const idx = Math.round(Math.abs(latestX) / cardWithGap);
-      const clamped = Math.max(0, Math.min(idx, totalDots - 1));
-      const progress = Math.min(1, Math.max(0, Math.abs(latestX) / maxScroll));
+      const idx = Math.round(Math.abs(latestX) / cwg);
+      const clamped = Math.max(0, Math.min(idx, dots - 1));
+      const progress = Math.min(1, Math.max(0, Math.abs(latestX) / ms));
       setActiveIndex(clamped);
       setScrollProgress(progress);
 
       if (
         clamped !== lastSnappedIndexRef.current &&
-        typeof window !== "undefined" &&
         typeof navigator !== "undefined" &&
         "vibrate" in navigator
       ) {
@@ -106,13 +132,25 @@ export default function ServiceCarousel({
     };
 
     updateCardWidth();
-    window.addEventListener("resize", updateCardWidth);
 
-    const t1 = setTimeout(updateCardWidth, 0);
+    const t1 = setTimeout(() => {
+      updateCardWidth();
+    }, 0);
     const t2 = setTimeout(() => {
       calculateLayout();
       lockSectionHeight();
     }, 200);
+    const t3 = setTimeout(() => {
+      calculateLayout();
+      lockSectionHeight();
+    }, 600);
+
+    const onResize = () => {
+      updateCardWidth();
+      calculateLayout();
+      lockSectionHeight();
+    };
+    window.addEventListener("resize", onResize);
 
     const unsubscribe = dragX.on("change", updateActiveIndex);
 
@@ -123,38 +161,68 @@ export default function ServiceCarousel({
     if (viewportRef.current) resizeObs.observe(viewportRef.current);
 
     return () => {
-      window.removeEventListener("resize", updateCardWidth);
+      window.removeEventListener("resize", onResize);
       clearTimeout(t1);
       clearTimeout(t2);
+      clearTimeout(t3);
       unsubscribe();
       resizeObs.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [services.length, cardWidth, maxScroll, totalDots]);
+  }, [services.length]);
+
+  const handleDragStart = () => {
+    draggedRef.current = false;
+    boundaryHapticRef.current = "none";
+    const cwg = cardWidthRef.current + GAP;
+    dragStartIndexRef.current = Math.round(Math.abs(dragX.get()) / cwg);
+  };
 
   const handleDrag = (_e: unknown, info: PanInfo) => {
-    if (maxScroll <= 0) return;
-    const progress = Math.min(
-      1,
-      Math.max(0, Math.abs(info.offset.x) / maxScroll)
-    );
+    const ms = maxScrollRef.current;
+    if (Math.abs(info.offset.x) > 4) draggedRef.current = true;
+    if (ms <= 0) return;
+    const progress = Math.min(1, Math.max(0, Math.abs(info.offset.x) / ms));
     setScrollProgress(progress);
+
+    // Boundary bump: soft tick when the user pushes past either edge.
+    const x = dragX.get();
+    const hasVibrate =
+      typeof navigator !== "undefined" && "vibrate" in navigator;
+    if (x > 8 && boundaryHapticRef.current !== "start") {
+      if (hasVibrate) navigator.vibrate?.([6, 30, 6]);
+      boundaryHapticRef.current = "start";
+    } else if (x < -ms - 8 && boundaryHapticRef.current !== "end") {
+      if (hasVibrate) navigator.vibrate?.([6, 30, 6]);
+      boundaryHapticRef.current = "end";
+    } else if (x <= 0 && x >= -ms) {
+      boundaryHapticRef.current = "none";
+    }
+  };
+
+  const handleClickCapture: React.MouseEventHandler = (e) => {
+    if (draggedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      draggedRef.current = false;
+    }
   };
 
   const handleDragEnd = (_e: unknown, info: PanInfo) => {
-    if (!canScroll) return;
+    const ms = maxScrollRef.current;
+    const dots = totalDotsRef.current;
+    const cwg = cardWidthRef.current + GAP;
+    if (ms <= 0 || dots <= 0) return;
     const velocity = info.velocity.x;
     const currentX = dragX.get();
-    const maxPosition = totalDots - 1;
-    const currentIndex = Math.round(Math.abs(currentX) / cardWithGap);
+    const maxPosition = dots - 1;
+    const currentIndex = Math.round(Math.abs(currentX) / cwg);
 
     let targetIndex: number;
     if (Math.abs(velocity) > 300) {
       const cardsToMove = Math.min(Math.ceil(Math.abs(velocity) / 400), 3);
       targetIndex =
-        velocity < 0
-          ? currentIndex + cardsToMove
-          : currentIndex - cardsToMove;
+        velocity < 0 ? currentIndex + cardsToMove : currentIndex - cardsToMove;
     } else if (Math.abs(velocity) > 100) {
       targetIndex = velocity < 0 ? currentIndex + 1 : currentIndex - 1;
     } else {
@@ -164,20 +232,22 @@ export default function ServiceCarousel({
     targetIndex = Math.max(0, Math.min(targetIndex, maxPosition));
 
     const snapTo =
-      targetIndex === maxPosition ? -maxScroll : -targetIndex * cardWithGap;
+      targetIndex === maxPosition ? -ms : -targetIndex * cwg;
 
     dragX.set(snapTo);
     setActiveIndex(targetIndex);
-    setScrollProgress(maxScroll > 0 ? Math.abs(snapTo) / maxScroll : 0);
+    setScrollProgress(ms > 0 ? Math.abs(snapTo) / ms : 0);
 
+    const movedFromStart = targetIndex !== dragStartIndexRef.current;
     if (
-      targetIndex !== lastSnappedIndexRef.current &&
+      movedFromStart &&
       typeof navigator !== "undefined" &&
       "vibrate" in navigator
     ) {
-      navigator.vibrate?.(8);
-      lastSnappedIndexRef.current = targetIndex;
+      navigator.vibrate?.(10);
     }
+    lastSnappedIndexRef.current = targetIndex;
+    boundaryHapticRef.current = "none";
   };
 
   const bg = background === "white" ? "bg-white" : "bg-[#fafafa]";
@@ -203,8 +273,8 @@ export default function ServiceCarousel({
 
       <div
         ref={viewportRef}
-        className="overflow-hidden w-full"
-        style={{ paddingLeft: EDGE_PADDING, paddingRight: 0 }}
+        className="overflow-hidden w-full select-none"
+        style={{ paddingLeft: EDGE_PADDING }}
       >
         <motion.div
           className={`flex items-stretch ${
@@ -224,7 +294,7 @@ export default function ServiceCarousel({
           }}
           drag={canScroll ? "x" : false}
           dragConstraints={
-            canScroll && maxScroll > 0 ? { left: -maxScroll, right: 0 } : false
+            canScroll && maxScroll > 0 ? { left: -maxScroll, right: 0 } : undefined
           }
           dragElastic={0.15}
           dragMomentum
@@ -234,8 +304,10 @@ export default function ServiceCarousel({
             power: 0.4,
             timeConstant: 200,
           }}
+          onDragStart={handleDragStart}
           onDrag={handleDrag}
           onDragEnd={handleDragEnd}
+          onClickCapture={handleClickCapture}
         >
           {services.map((service, i) => (
             <div
