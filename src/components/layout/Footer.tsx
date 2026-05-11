@@ -18,9 +18,9 @@ export default function Footer() {
               <Image
                 src="/mainlogo.png"
                 alt={`${BUSINESS.name} Logo`}
-                width={60}
+                width={160}
                 height={60}
-                className="object-cover rounded-full"
+                className="h-12 w-auto object-contain"
               />
             </Link>
             <p className="text-sm text-white/90 mb-4">

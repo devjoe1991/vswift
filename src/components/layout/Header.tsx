@@ -52,9 +52,10 @@ export default function Header() {
             <Image
               src="/mainlogo.png"
               alt={`${BUSINESS.name} Logo`}
-              width={50}
-              height={50}
-              className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-full hover:opacity-80 transition-opacity"
+              width={120}
+              height={48}
+              priority
+              className="h-9 sm:h-11 w-auto object-contain hover:opacity-80 transition-opacity"
             />
           </Link>
 
