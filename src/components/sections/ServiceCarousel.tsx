@@ -31,7 +31,6 @@ export default function ServiceCarousel({
   const [canScroll, setCanScroll] = useState(false);
   const [cardWidth, setCardWidth] = useState(DESKTOP_CARD_WIDTH);
   const [totalDots, setTotalDots] = useState(0);
-  const [sectionHeight, setSectionHeight] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -94,19 +93,6 @@ export default function ServiceCarousel({
       }
     };
 
-    const lockSectionHeight = () => {
-      if (!sectionRef.current) return;
-      const cards = sectionRef.current.querySelectorAll<HTMLElement>(
-        "[data-service-card]"
-      );
-      let tallest = 0;
-      cards.forEach((c) => {
-        if (c.offsetHeight > tallest) tallest = c.offsetHeight;
-      });
-      const scrollH = sectionRef.current.scrollHeight;
-      setSectionHeight(Math.max(scrollH, tallest + 100));
-    };
-
     const updateActiveIndex = (latestX: number) => {
       const ms = maxScrollRef.current;
       const dots = totalDotsRef.current;
@@ -136,28 +122,18 @@ export default function ServiceCarousel({
     const t1 = setTimeout(() => {
       updateCardWidth();
     }, 0);
-    const t2 = setTimeout(() => {
-      calculateLayout();
-      lockSectionHeight();
-    }, 200);
-    const t3 = setTimeout(() => {
-      calculateLayout();
-      lockSectionHeight();
-    }, 600);
+    const t2 = setTimeout(calculateLayout, 200);
+    const t3 = setTimeout(calculateLayout, 600);
 
     const onResize = () => {
       updateCardWidth();
       calculateLayout();
-      lockSectionHeight();
     };
     window.addEventListener("resize", onResize);
 
     const unsubscribe = dragX.on("change", updateActiveIndex);
 
-    const resizeObs = new ResizeObserver(() => {
-      calculateLayout();
-      lockSectionHeight();
-    });
+    const resizeObs = new ResizeObserver(calculateLayout);
     if (viewportRef.current) resizeObs.observe(viewportRef.current);
 
     return () => {
@@ -253,11 +229,7 @@ export default function ServiceCarousel({
   const bg = background === "white" ? "bg-white" : "bg-[#fafafa]";
 
   return (
-    <section
-      ref={sectionRef}
-      className={`${bg} py-12 md:py-16`}
-      style={sectionHeight ? { minHeight: sectionHeight } : undefined}
-    >
+    <section ref={sectionRef} className={`${bg} py-12 md:py-16`}>
       {(heading || subheading) && (
         <div className="max-w-7xl mx-auto px-4 text-center mb-8 md:mb-10">
           {heading && (
