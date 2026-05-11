@@ -36,6 +36,15 @@ const VARIANTS: Record<Variant, string> = {
     "border-2 border-white text-white bg-transparent hover:bg-white/20",
 };
 
+const WHATSAPP_VARIANTS: Record<Variant, string> = {
+  primary:
+    "bg-[#25D366] text-white border-2 border-[#25D366] hover:bg-[#1FB955] hover:border-[#1FB955]",
+  outline:
+    "border-2 border-[#25D366] text-[#25D366] bg-white hover:bg-[#25D366] hover:text-white",
+  ghost:
+    "bg-[#25D366] text-white border-2 border-white/30 hover:bg-[#1FB955]",
+};
+
 function resolveHref(intent: Intent, href?: string): string {
   if (href) return href;
   switch (intent) {
@@ -88,10 +97,13 @@ export default function CTAButton({
   const resolvedLabel = label ?? defaultLabel(intent);
   const external = isExternal(resolvedHref);
 
+  const variantClasses =
+    intent === "whatsapp" ? WHATSAPP_VARIANTS[variant] : VARIANTS[variant];
+
   const classes = [
-    "inline-flex items-center justify-center gap-2 font-semibold rounded-sm transition-colors shadow-sm",
+    "inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-colors shadow-sm",
     SIZES[size],
-    VARIANTS[variant],
+    variantClasses,
     fullWidth ? "w-full" : "",
     className,
   ]
