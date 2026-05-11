@@ -1,83 +1,85 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
+import CTAButton from "@/components/ui/CTAButton";
+import { BUSINESS, NAV_ITEMS, type NavItem } from "@/data/business";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 120) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
+
+  useEffect(() => {
+    if (isMenuOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
 
   return (
     <>
       {/* Top Bar */}
-      <div className="bg-[#87CEEB] text-white py-2 px-4 text-sm">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span className="text-white font-medium">vSwift Logistics</span>
-          <a
-            href="tel:+447487263317"
-            className="flex items-center gap-2 px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-sm transition-colors font-medium"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-white"
-            >
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            <span>+44 (0) 7487 263317</span>
-          </a>
+      <div className="bg-[#87CEEB] text-white py-2 px-4 text-xs sm:text-sm">
+        <div className="max-w-7xl mx-auto flex justify-between items-center gap-3">
+          <span className="text-white font-medium truncate">{BUSINESS.name}</span>
+          <span className="text-white/90 hidden sm:inline">{BUSINESS.coverage.summary}</span>
         </div>
       </div>
 
       {/* Sticky Header */}
       <motion.header
-        className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50"
+        className="sticky top-0 z-50 backdrop-blur-md bg-white/85 border-b border-gray-200/50"
         initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        animate={{ y: hidden ? -100 : 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
       >
-        <nav className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <a href="/" className="flex items-center">
+        <nav className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-center gap-3">
+          <Link href="/" className="flex items-center" aria-label={`${BUSINESS.name} home`}>
             <Image
               src="/mainlogo.png"
-              alt="vSwift Logistics Logo"
+              alt={`${BUSINESS.name} Logo`}
               width={50}
               height={50}
-              className="object-cover rounded-full hover:opacity-80 transition-opacity"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-full hover:opacity-80 transition-opacity"
             />
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-8 items-center">
-            <a href="#services" className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors">
-              Services
-            </a>
-            <a href="/about" className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors">
-              About
-            </a>
-            <a href="#contact" className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors">
-              Contact
-            </a>
-            <a
-              href="mailto:sales@vswift.uk"
-              className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm inline-block text-center"
-            >
-              Enquire Now
-            </a>
+          <div className="hidden md:flex gap-6 items-center">
+            {NAV_ITEMS.filter((n) => n.href !== "/").map((item) => (
+              <DesktopNavItem
+                key={item.href}
+                item={item}
+                openDropdown={openDropdown}
+                setOpenDropdown={setOpenDropdown}
+              />
+            ))}
+            <CTAButton intent="whatsapp" variant="outline" size="sm" label="WhatsApp" />
           </div>
 
-          {/* Mobile Hamburger Menu */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
-            aria-label="Toggle menu"
-          >
+          {/* Mobile CTA + Hamburger */}
+          <div className="md:hidden flex items-center gap-1">
+            <CTAButton intent="whatsapp" variant="outline" size="sm" iconOnly ariaLabel="Message on WhatsApp" />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex flex-col gap-1.5 p-2"
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
             <motion.span
               className="w-6 h-0.5 bg-[#87CEEB]"
               animate={isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
@@ -93,48 +95,43 @@ export default function Header() {
               animate={isMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
               transition={{ type: "spring", damping: 20, stiffness: 300 }}
             />
-          </button>
+            </button>
+          </div>
         </nav>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Drawer */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              className="md:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-md"
+              className="md:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-md max-h-[80vh] overflow-y-auto scrollbar-thin"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
             >
-              <div className="px-4 py-6 flex flex-col gap-4">
-                <a
-                  href="#services"
-                  className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Services
-                </a>
-                <a
-                  href="/about"
-                  className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  About
-                </a>
-                <a
-                  href="#contact"
-                  className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contact
-                </a>
-                <a
-                  href="mailto:sales@vswift.uk"
-                  className="px-6 py-2 border-2 border-[#87CEEB] text-[#1e3a5f] hover:bg-[#87CEEB] hover:text-white transition-colors rounded-sm w-full mt-2 inline-block text-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Enquire Now
-                </a>
+              <div className="px-4 py-6 flex flex-col gap-1">
+                {NAV_ITEMS.map((item) => (
+                  <MobileNavItem
+                    key={item.href}
+                    item={item}
+                    onNavigate={() => setIsMenuOpen(false)}
+                  />
+                ))}
+                <div className="mt-4 flex flex-col gap-3">
+                  <CTAButton
+                    intent="whatsapp"
+                    variant="primary"
+                    size="md"
+                    fullWidth
+                  />
+                  <CTAButton
+                    intent="call"
+                    variant="outline"
+                    size="md"
+                    fullWidth
+                    label="Call Us"
+                  />
+                </div>
               </div>
             </motion.div>
           )}
@@ -144,3 +141,137 @@ export default function Header() {
   );
 }
 
+function DesktopNavItem({
+  item,
+  openDropdown,
+  setOpenDropdown,
+}: {
+  item: NavItem;
+  openDropdown: string | null;
+  setOpenDropdown: (v: string | null) => void;
+}) {
+  const hasChildren = !!item.children && item.children.length > 0;
+  const isOpen = openDropdown === item.href;
+
+  if (!hasChildren) {
+    return (
+      <Link
+        href={item.href}
+        className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors"
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpenDropdown(item.href)}
+      onMouseLeave={() => setOpenDropdown(null)}
+    >
+      <Link
+        href={item.href}
+        className="text-[#1e3a5f] hover:text-[#87CEEB] transition-colors flex items-center gap-1"
+      >
+        {item.label}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </Link>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="absolute left-0 top-full pt-2 w-64"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            <div className="bg-white rounded-md shadow-lg border border-gray-200 py-2 max-h-[60vh] overflow-y-auto scrollbar-thin">
+              {item.children!.map((child) => (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  className="block px-4 py-2 text-sm text-[#1e3a5f] hover:bg-[#87CEEB]/10 hover:text-[#87CEEB] transition-colors"
+                >
+                  {child.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function MobileNavItem({
+  item,
+  onNavigate,
+}: {
+  item: NavItem;
+  onNavigate: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const hasChildren = !!item.children && item.children.length > 0;
+
+  return (
+    <div className="border-b border-gray-100 last:border-b-0">
+      <div className="flex items-center justify-between">
+        <Link
+          href={item.href}
+          onClick={onNavigate}
+          className="flex-1 text-[#1e3a5f] hover:text-[#87CEEB] transition-colors py-3"
+        >
+          {item.label}
+        </Link>
+        {hasChildren && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="p-2 text-[#1e3a5f]"
+            aria-label={`Toggle ${item.label} submenu`}
+            aria-expanded={expanded}
+          >
+            <motion.svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </motion.svg>
+          </button>
+        )}
+      </div>
+      <AnimatePresence>
+        {hasChildren && expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="pl-4 pb-2 flex flex-col">
+              {item.children!.map((child) => (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  onClick={onNavigate}
+                  className="text-sm text-[#1e3a5f]/80 hover:text-[#87CEEB] transition-colors py-2"
+                >
+                  {child.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
